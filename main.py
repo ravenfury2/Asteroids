@@ -3,16 +3,9 @@
 # throughout this file
 import pygame
 
-# import everything from the module
-# constants.py into the current file
 from constants import *
-
-# import Playerfrom the module
-# player.py into the current file
 from player import Player
-
-# import Asteroid from the module
-# asteroid.py into the current file
+from shot import Shot
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 
@@ -24,9 +17,11 @@ def main():
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
+    Shot.containers = (shots, updatable, drawable)
     Player.containers = (updatable, drawable)
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
