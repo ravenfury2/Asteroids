@@ -34,13 +34,17 @@ def main():
 
     dt = 0
 
-    running = True
-    while running:
+    
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return
         
         updatable.update(dt)
+        for asteroid in asteroids:
+            if asteroid.is_colliding(player):
+                print("Game Over!")
+                return
 
         screen.fill("black")
         
