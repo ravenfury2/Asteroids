@@ -34,12 +34,19 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return
         
         updatable.update(dt)
         for asteroid in asteroids:
             if asteroid.is_colliding(player):
                 print("Game Over!")
                 return
+            for bullet in shots:
+                if bullet.is_colliding(asteroid):
+                    bullet.kill()
+                    asteroid.split()
 
         screen.fill("black")
         
