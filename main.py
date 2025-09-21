@@ -16,10 +16,10 @@ def main():
 
     game_paused = False
 
-    #Object grouping   
+    #Object grouping
+    asteroids = pygame.sprite.Group()   
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
 
     #Adding objects groups to containers
@@ -85,7 +85,21 @@ def main():
         screen.fill("black")
 
         if not game_paused:
+            # limit the framerate to 60 FPS
+            dt = clock.tick(60) / 1000
+
+            # Spawn asteroid if able to from asteroidfield timer
+            if asteroid_field.update(dt):
+                asteroid_field.spawn_random()
+  
+            # Updates all objects  
             updatable.update(dt)
+                        
+            # Draw all objects
+            for objects in drawable:
+                objects.draw(screen)
+            
+            # collision detection
             for asteroid in asteroids:
                 if asteroid.is_colliding(player):
                     print("Game Over!")
@@ -94,16 +108,12 @@ def main():
                     if bullet.is_colliding(asteroid):
                         bullet.kill()
                         asteroid.split()
-        
-            for objects in drawable:
-                objects.draw(screen)
         else:
             draw_pause_menu()
 
         pygame.display.flip()
 
-        # limit the framerate to 60 FPS
-        dt = clock.tick(60) / 1000
+        
     pygame.quit()
         
         
