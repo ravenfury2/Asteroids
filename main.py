@@ -16,10 +16,10 @@ def main():
 
     game_paused = False
 
-    #Object grouping   
+    #Object grouping
+    asteroids = pygame.sprite.Group()   
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
 
     #Adding objects groups to containers
@@ -85,8 +85,20 @@ def main():
         screen.fill("black")
 
         if not game_paused:
-            updatable.update(dt)
+            # limit the framerate to 60 FPS
+            dt = clock.tick(60) / 1000
 
+            # Spawn asteroid if able to from asteroidfield timer
+            if asteroid_field.update(dt):
+                asteroid_field.spawn_random()
+  
+            # Updates all objects  
+            updatable.update(dt)
+                        
+            # Draw all objects
+            for objects in drawable:
+                objects.draw(screen)
+            
             # collision detection
             for asteroid in asteroids:
                 if asteroid.is_colliding(player):
@@ -96,29 +108,12 @@ def main():
                     if bullet.is_colliding(asteroid):
                         bullet.kill()
                         asteroid.split()
-            for objects in drawable:
-            # Horizontal wrapping
-                if objects.position.x > SCREEN_WIDTH:
-                    objects.position.x = -objects.radius # Appears on the left
-                elif objects.position.x < -objects.radius:
-                    objects.position.x = SCREEN_WIDTH # Appears on the right
-            
-            # Vertical wrapping
-                if objects.position.y > SCREEN_HEIGHT:
-                    objects.position.y = -objects.radius # Appears at the top
-                elif objects.position.y < -objects.radius:
-                    objects.position.y = SCREEN_HEIGHT # Appears at the bottom
-            
-
-            for objects in drawable:
-                objects.draw(screen)
         else:
             draw_pause_menu()
 
         pygame.display.flip()
 
-        # limit the framerate to 60 FPS
-        dt = clock.tick(60) / 1000
+        
     pygame.quit()
         
         
