@@ -21,16 +21,16 @@ class CircleShape(pygame.sprite.Sprite):
     def update(self, dt):
         
         # Horizontal wrapping
-        if self.position.x > SCREEN_WIDTH:
-            self.position.x = -self.radius # Appears on the left
-        elif self.position.x < -self.radius:
-            self.position.x = SCREEN_WIDTH # Appears on the right
+        if self.position.x > SCREEN_WIDTH + self.radius * 2:
+            self.position.x = -self.radius      # Appears on the left
+        elif self.position.x < -self.radius * 2:
+            self.position.x = SCREEN_WIDTH      # Appears on the right
             
         # Vertical wrapping
-        if self.position.y > SCREEN_HEIGHT:
-            self.position.y = -self.radius # Appears at the top
-        elif self.position.y < -self.radius:
-            self.position.y = SCREEN_HEIGHT # Appears at the bottom
+        if self.position.y > SCREEN_HEIGHT + self.radius * 2:
+            self.position.y = -self.radius      # Appears at the top
+        elif self.position.y < -self.radius * 2:
+            self.position.y = SCREEN_HEIGHT     # Appears at the bottom
 
     def is_colliding(self, other):
         return self.position.distance_to(other.position) <= (self.radius + other.radius)
