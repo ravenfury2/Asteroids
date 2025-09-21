@@ -86,6 +86,8 @@ def main():
 
         if not game_paused:
             updatable.update(dt)
+
+            # collision detection
             for asteroid in asteroids:
                 if asteroid.is_colliding(player):
                     print("Game Over!")
@@ -94,7 +96,20 @@ def main():
                     if bullet.is_colliding(asteroid):
                         bullet.kill()
                         asteroid.split()
-        
+            for objects in drawable:
+            # Horizontal wrapping
+                if objects.position.x > SCREEN_WIDTH:
+                    objects.position.x = -objects.radius # Appears on the left
+                elif objects.position.x < -objects.radius:
+                    objects.position.x = SCREEN_WIDTH # Appears on the right
+            
+            # Vertical wrapping
+                if objects.position.y > SCREEN_HEIGHT:
+                    objects.position.y = -objects.radius # Appears at the top
+                elif objects.position.y < -objects.radius:
+                    objects.position.y = SCREEN_HEIGHT # Appears at the bottom
+            
+
             for objects in drawable:
                 objects.draw(screen)
         else:
