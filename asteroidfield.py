@@ -29,7 +29,7 @@ class AsteroidField(pygame.sprite.Sprite):
         normal_vector, position_func = self.edges[edge]
 
         # Get a random position on that edge
-        position = position_func(random.uniform(-2, 2))
+        position = position_func(random.uniform(0, 1))
 
         # Calculate a velocity vector pointing inwards
         center = pygame.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
