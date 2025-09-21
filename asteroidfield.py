@@ -6,23 +6,23 @@ from constants import *
 
 class AsteroidField(pygame.sprite.Sprite):
 
-    def left_edge_pos(y):
-        return pygame.Vector2(-ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)
+    #def left_edge_pos(y):
+        #return pygame.Vector2(-ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)
 
-    def right_edge_pos(y):
-        return pygame.Vector2(SCREEN_WIDTH + ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)
+    #def right_edge_pos(y):
+        #return pygame.Vector2(SCREEN_WIDTH + ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)
 
-    def top_edge_pos(x):
-        return pygame.Vector2(x * SCREEN_WIDTH, -ASTEROID_MAX_RADIUS)
+    #def top_edge_pos(x):
+        #return pygame.Vector2(x * SCREEN_WIDTH, -ASTEROID_MAX_RADIUS)
 
-    def bottom_edge_pos(x):
-        return pygame.Vector2(x * SCREEN_WIDTH, SCREEN_HEIGHT + ASTEROID_MAX_RADIUS)
+    #def bottom_edge_pos(x):
+        #return pygame.Vector2(x * SCREEN_WIDTH, SCREEN_HEIGHT + ASTEROID_MAX_RADIUS)
 
     edges = [
-        [pygame.Vector2(1, 0),  left_edge_pos],
-        [pygame.Vector2(-1, 0), right_edge_pos],
-        [pygame.Vector2(0, 1),  top_edge_pos],
-        [pygame.Vector2(0, -1), bottom_edge_pos],
+        [pygame.Vector2(1, 0),  lambda y: pygame.Vector2(-ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)],
+        [pygame.Vector2(-1, 0), lambda y: pygame.Vector2(SCREEN_WIDTH + ASTEROID_MAX_RADIUS, y * SCREEN_HEIGHT)],
+        [pygame.Vector2(0, 1),  lambda x: pygame.Vector2(x * SCREEN_WIDTH, -ASTEROID_MAX_RADIUS)],
+        [pygame.Vector2(0, -1), lambda x: pygame.Vector2(x * SCREEN_WIDTH, SCREEN_HEIGHT + ASTEROID_MAX_RADIUS)],
     ]
 
     def __init__(self):
