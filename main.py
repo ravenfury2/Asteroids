@@ -14,7 +14,7 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
 
-    game_paused = False
+    
 
     #Object grouping
     asteroids = pygame.sprite.Group()   
@@ -31,7 +31,8 @@ def main():
     #Lives and game state
     lives = 3
     game_over = False
-
+    game_paused = False
+    
     #Player and play field
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -44,9 +45,11 @@ def main():
     font = pygame.font.Font(None, 74)
     small_font = pygame.font.Font(None, 50)
 
+    # Draws a minimal HUD that shows the lives count
     def draw_hud():
         draw_text(f"Lives: {lives}", small_font, (255, 255, 255), 90, 30)
     
+    # Draws the game over screen after losing all lives
     def draw_game_over():
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 150))
@@ -54,6 +57,7 @@ def main():
         draw_text("Game Over", font, (255, 255, 255), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40)
         draw_text("Press R to Restart or ESC to Quit", small_font, (200, 200, 200), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20)
 
+    # Handles when player dies
     def handle_player_death():
         nonlocal lives, game_over
         lives -= 1
@@ -67,6 +71,7 @@ def main():
         text_rect= text_surface.get_rect(center=(x, y))
         screen.blit(text_surface, text_rect)
     
+    # Draws a mouse interactable pause menu
     def draw_pause_menu():
         # Semi-transparent overlay
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
