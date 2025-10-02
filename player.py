@@ -19,6 +19,8 @@ class Player(CircleShape):
         return [a, b, c]
     
     def draw(self, screen):
+        if not self.blinking_on():
+            return # skip drawing this frame to "hide"
         color = "gray" if self.is_invincible() else "white"
         pygame.draw.polygon(screen, color, self.triangle(), width=2)
 
@@ -60,7 +62,12 @@ class Player(CircleShape):
 
     def is_invincible(self):
         return (pygame.time.get_ticks() / 1000) < self.invincible_until
-        
-        
+    
+    def blinking_on(self):
+        if not self.is_invincible():
+            return True
+        tick = pygame.time.get_ticks() / 1000
+        phase = (tick // PLAYER_BLINK_PERIOD) % 2 # 0 or 1
+        return phase == 0 # visible half the time        
         
 
