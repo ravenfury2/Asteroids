@@ -7,6 +7,7 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.shoot_timer = 0
+        self.invincible_until = 0.0
 
     # in the player class
     def triangle(self):
@@ -18,7 +19,8 @@ class Player(CircleShape):
         return [a, b, c]
     
     def draw(self, screen):
-        pygame.draw.polygon(screen, "white", self.triangle(), width=2)
+        color = "gray" if self.is_invincible() else "white"
+        pygame.draw.polygon(screen, color, self.triangle(), width=2)
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -49,6 +51,15 @@ class Player(CircleShape):
         self.shoot_timer = PLAYER_SHOOT_COOLDOWN
         shot = Shot(self.position.x, self.position.y)
         shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
+    
+    def reset_to_spawn(self, x, y):
+        self.position.update(x, y)
+        self.velocity.update(0, 0)
+        self.rotation = 0
+        self.invincible_until = pygame.time.get_ticks() / 1000 + 2.0
+
+    def is_invincible(self):
+        return (pygame.time.get_ticks() / 1000) < self.invincible_until
         
         
         

@@ -28,9 +28,14 @@ def main():
     Shot.containers = (shots, updatable, drawable)
     Player.containers = (updatable, drawable)
 
+    #Lives and game state
+    lives = 3
+    game_over = False
+
     #Player and play field
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
+    player.reset_to_spawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
     #Delta Time initiator
     dt = 0
@@ -38,6 +43,24 @@ def main():
     # Fonts
     font = pygame.font.Font(None, 74)
     small_font = pygame.font.Font(None, 50)
+
+    def draw_hud():
+        draw_text(f"Lives: {lives}", small_font, (255, 255, 255), 90, 30)
+    
+    def draw_game_over():
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 150))
+        screen.blit(overlay, (0, 0))
+        draw_text("Game Over", font, (255, 255, 255), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40)
+        draw_text("Press R to Restart or ESC to Quit", small_font, (200, 200, 200), SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20)
+
+    def handle_player_death():
+        nonlocal lives, game_over
+        lives -= 1
+        if lives > 0:
+            player.reset_to_spawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT /2)
+        else:
+            game_over = True
 
     def draw_text(text, font, color, x, y):
         text_surface = font.render(text, True, color)
@@ -72,9 +95,21 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    game_paused = not game_paused
-            if event.type == pygame.MOUSEBUTTONDOWN and game_paused:
+                if game_over:
+                    if event.key == pygame.K_ESCAPE:
+                        running = False
+                    elif event.key == pygame.K_r and game_over:
+                        # restart
+                        lives = 3
+                        game_over = False
+                        # clear entities
+                        for a in list(asteroids): a.kill()
+                        for s in list(shots): s.kill()
+                        player.reset_to_spawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                else:
+                    if event.key == pygame.K_ESCAPE:
+                        game_paused = not game_paused
+            if event.type == pygame.MOUSEBUTTONDOWN and game_paused and not game_over:
                 mouse_pos = event.pos
                 resume_rect, quit_rect = draw_pause_menu() # Re-draw to get button rects
                 if resume_rect.collidepoint(mouse_pos):
@@ -83,6 +118,11 @@ def main():
                     running = False
 
         screen.fill("black")
+
+        if game_over:
+            draw_game_over()
+            pygame.display.flip()
+            continue
 
         if not game_paused:
             # limit the framerate to 60 FPS
@@ -99,11 +139,13 @@ def main():
             for objects in drawable:
                 objects.draw(screen)
             
+            draw_hud()            
             # collision detection
             for asteroid in asteroids:
-                if asteroid.is_colliding(player):
-                    print("Game Over!")
-                    return
+                # skip collision if invincible
+                if not player.is_invincible() and asteroid.is_colliding(player):
+                    handle_player_death()
+                    break
                 for bullet in shots:
                     if bullet.is_colliding(asteroid):
                         bullet.kill()
