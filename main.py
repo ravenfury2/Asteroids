@@ -1,7 +1,8 @@
 # this allows us to use code from
 # the open-source pygame library
 # throughout this file
-import pygame
+import pygame # pyright: ignore[reportMissingImports]
+from logger import log_state, log_event
 
 from constants import *
 from player import Player
@@ -162,6 +163,7 @@ def main():
             draw_pause_menu()
 
         pygame.display.flip()
+        log_state()
 
         
     pygame.quit()
